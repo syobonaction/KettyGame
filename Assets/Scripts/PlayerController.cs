@@ -2,13 +2,15 @@
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
-	enum PlayerState{Spawning, Idle, Walking, Running, Jumping, Dead};
+	enum PlayerState{Spawning, Idle, Movement, Dead};
 	
 	PlayerState currentState;
 	float lastStateChange = 0.0f;
 	
-	bool isGrounded = false;
 	float walkSpeed = 3.0f;
+	float jump = 200.0f;
+	
+	public GameObject player;
 	
 	// Use this for initialization
 	void Start () {
@@ -24,12 +26,8 @@ public class PlayerController : MonoBehaviour {
 			case PlayerState.Idle:
 				PlayerIdle();
 				break;
-			case PlayerState.Walking:
-				PlayerWalking();
-				break;
-			case PlayerState.Running:
-				break;
-			case PlayerState.Jumping:
+			case PlayerState.Movement:
+				PlayerMovement();
 				break;
 			case PlayerState.Dead:
 				PlayerDead();
@@ -51,31 +49,45 @@ public class PlayerController : MonoBehaviour {
 	void PlayerSpawning(){
 		print ("I am spawning!");
 		if(GetStateElapsed() >= 1f){
+			player = Instantiate(player);
 			SetCurrentState(PlayerState.Idle);
 		}
 	}
 	
 	void PlayerIdle(){
 		print ("I am idle!");
-		if(Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A)){
-			SetCurrentState(PlayerState.Walking);
+		if(Input.GetKeyDown(KeyCode.Space)&& player.GetComponent<PlayerCollision>().isGrounded){
+			Jump();
+		}
+		if(Input.anyKey){
+			SetCurrentState(PlayerState.Movement);
 		}
 	}
 	
-	void PlayerWalking(){
-		print ("I am walking!");
+	void PlayerMovement(){
+		print ("I am recieving input!");
 		if(Input.GetKey(KeyCode.D)){
-			transform.Translate(Vector2.right * walkSpeed * Time.deltaTime);
+			player.transform.Translate(Vector2.right * walkSpeed * Time.deltaTime);
 		} else if(Input.GetKey(KeyCode.A)) {
-			transform.Translate(Vector2.left * walkSpeed * Time.deltaTime);
+			player.transform.Translate(Vector2.left * walkSpeed * Time.deltaTime);
 		} else {
 			SetCurrentState(PlayerState.Idle);
 		}
+		if(Input.GetKeyDown(KeyCode.Space)&& player.GetComponent<PlayerCollision>().isGrounded){
+			Jump();
+		}
+	}
+	
+	void Jump(){
+		print ("I am jumping!");
+		player.GetComponent<PlayerCollision>().isGrounded = false;
+		player.GetComponent<Rigidbody2D>().AddForce(new Vector2(0,jump));
 	}
 	
 	void PlayerDead(){
 		print ("I am dead!");
-		Destroy(this.gameObject);
+		Destroy(player.gameObject);
+		SetCurrentState(PlayerState.Spawning);
 	}
 	
 	void OnTriggerEnter2D(Collider2D collider) {
