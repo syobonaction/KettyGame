@@ -77,7 +77,9 @@ public class PlayerController : MonoBehaviour {
 	
 	void PlayerIdle(){
 		print ("I am idle!");
-		if(Input.anyKey){
+		if(Input.GetKeyDown(KeyCode.Space)&& playerCollision.isGrounded){
+			SetCurrentState(PlayerState.Jumping);
+		} else if(Input.anyKey){
 			SetCurrentState(PlayerState.Movement);
 		}
 	}
@@ -94,7 +96,7 @@ public class PlayerController : MonoBehaviour {
 		} else {
 			SetCurrentState(PlayerState.Idle);
 		}
-		if(Input.GetKey(KeyCode.Space)&& playerCollision.isGrounded){
+		if(Input.GetKeyDown(KeyCode.Space)&& playerCollision.isGrounded){
 			SetCurrentState(PlayerState.Jumping);
 		}
 	}
@@ -138,7 +140,7 @@ public class PlayerController : MonoBehaviour {
 					currentSpeed = walkSpeed;
 				}
 			}
-			if(Input.GetKey(KeyCode.Space)){
+			if(Input.GetKeyDown(KeyCode.Space)){
 				SetCurrentState(PlayerState.Jumping);
 			}
 		} else {
