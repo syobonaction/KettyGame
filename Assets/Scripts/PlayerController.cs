@@ -20,10 +20,17 @@ public class PlayerController : MonoBehaviour {
 	public PlayerCollision playerCollision;
 	
 	private AudioSource playerAudio;
-	
+
+	//added by Jon. If things start to break remove this stuff first.
+	public string axisName ="Horizontal";
+	public Animator anim;
+
 	// Use this for initialization
 	void Start () {
 		SetCurrentState(PlayerState.Spawning);
+
+		//added by Jon.
+		anim = gameObject.GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -54,7 +61,22 @@ public class PlayerController : MonoBehaviour {
 				return;
 		}
 	}
-	
+
+	//added by Jon. Two functions to get the player to look to the right or left depending on the button pressed.
+
+	void lookLeft(){
+		Vector2 newScale = transform.localScale;
+		newScale.x = -1.0f;
+		player.transform.localScale = newScale;  
+	}
+
+	void lookRight(){
+		Vector2 newScale = transform.localScale;
+		newScale.x = 1.0f;
+		player.transform.localScale = newScale; 
+	}
+
+
 	void SetCurrentState(PlayerState state) {
 		previousState = currentState;
 		currentState = state;
@@ -82,16 +104,27 @@ public class PlayerController : MonoBehaviour {
 		} else if(Input.anyKey){
 			SetCurrentState(PlayerState.Movement);
 		}
+
 	}
 	
 	void PlayerMovement(){
 		print ("I am recieving input!");
+
+		//TRIGGER FOR THE SPEED VALUE FOR TRANSITIONS
+		//anim.SetFloat("Speed",Mathf.Abs (Input.GetAxis (axisName)));
+
 		if(Input.GetKey(KeyCode.LeftShift) && playerCollision.isGrounded){
 			SetCurrentState(PlayerState.Running);
 		}
 		if(Input.GetKey(KeyCode.D)){
+			//added by Jon
+			lookRight(); 
+
 			player.transform.Translate(Vector2.right * walkSpeed * Time.deltaTime);
 		} else if(Input.GetKey(KeyCode.A)) {
+			//added by Jon
+			lookLeft();
+
 			player.transform.Translate(Vector2.left * walkSpeed * Time.deltaTime);
 		} else {
 			SetCurrentState(PlayerState.Idle);
@@ -115,8 +148,14 @@ public class PlayerController : MonoBehaviour {
 	
 	void PlayerFalling(){
 		if(Input.GetKey(KeyCode.D)){
+			//added by Jon
+			lookRight();
+
 			player.transform.Translate(Vector2.right * walkSpeed * Time.deltaTime);
 		} else if(Input.GetKey(KeyCode.A)) {
+			//added by Jon
+			lookLeft();
+
 			player.transform.Translate(Vector2.left * walkSpeed * Time.deltaTime);
 		}
 		if(playerCollision.isGrounded){
