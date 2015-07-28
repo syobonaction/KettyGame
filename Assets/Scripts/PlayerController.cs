@@ -112,6 +112,7 @@ public class PlayerController : MonoBehaviour {
 
 		//TRIGGER FOR THE SPEED VALUE FOR TRANSITIONS
 		//anim.SetFloat("Speed",Mathf.Abs (Input.GetAxis (axisName)));
+		anim.SetFloat ("Speed", Mathf.Abs(Input.GetAxis (axisName)));
 
 		if(Input.GetKey(KeyCode.LeftShift) && playerCollision.isGrounded){
 			SetCurrentState(PlayerState.Running);
@@ -136,6 +137,10 @@ public class PlayerController : MonoBehaviour {
 	
 	void PlayerJumping(){
 		print ("I am jumping!");
+
+		//set the trigger for landing for the animations.
+		anim.SetTrigger("Jump");
+
 		if(previousState==PlayerState.Running){
 			jump += 100;
 		}
@@ -160,6 +165,9 @@ public class PlayerController : MonoBehaviour {
 		}
 		if(playerCollision.isGrounded){
 			SetCurrentState(PlayerState.Idle);
+
+			//set the trigger for landing for the animations.
+			anim.SetTrigger("Land");
 		}
 	}
 	
