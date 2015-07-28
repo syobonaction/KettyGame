@@ -18,19 +18,16 @@ public class PlayerController : MonoBehaviour {
 	public GameObject player;
 	public AudioClip jumpSound;
 	public PlayerCollision playerCollision;
+	public Animator anim;
 	
 	private AudioSource playerAudio;
 
 	//added by Jon. If things start to break remove this stuff first.
 	public string axisName ="Horizontal";
-	public Animator anim;
 
 	// Use this for initialization
 	void Start () {
 		SetCurrentState(PlayerState.Spawning);
-
-		//added by Jon.
-		anim = gameObject.GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
@@ -93,6 +90,7 @@ public class PlayerController : MonoBehaviour {
 			player = Instantiate(player);
 			playerAudio = player.GetComponent<AudioSource>();
 			playerCollision = player.GetComponent<PlayerCollision>();
+			anim = player.GetComponent<Animator>();
 			SetCurrentState(PlayerState.Idle);
 		}
 	}
