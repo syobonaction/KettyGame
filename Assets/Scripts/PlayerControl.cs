@@ -23,7 +23,7 @@ public class PlayerControl : MonoBehaviour {
 	//------------------------CHARLIES VARS -----------------------------//
 
 
-	 enum PlayerState{Spawning, Idle, Movement, Dead, Jumping, Running, Falling};
+	enum PlayerState{Spawning, Idle, Movement, Dead, Jumping, Running, Falling};
 	
 	PlayerState currentState;
 	PlayerState previousState;
@@ -36,7 +36,6 @@ public class PlayerControl : MonoBehaviour {
 	float DEFJUMP = 300.0f;
 	float jump = 300.0f;
 	
-	public GameObject player = GameObject.Find("PlayerCat(Clone)");
 	public AudioClip jumpSound;
 	private AudioSource playerAudio; 
 
@@ -141,7 +140,7 @@ public class PlayerControl : MonoBehaviour {
 		//print ("I am recieving input!");
 		
 		//TRIGGER FOR THE SPEED VALUE FOR TRANSITIONS
-		anim.SetFloat ("Speed", currentSpeed);
+		
 		
 		if(Input.GetKey(KeyCode.LeftShift) && grounded){
 			SetCurrentState(PlayerState.Running);
@@ -150,6 +149,7 @@ public class PlayerControl : MonoBehaviour {
 		if(Input.GetAxis (axisName) < 0)
 		{
 			//turn to the left is the A button is pressed and facing right.
+			anim.SetFloat ("Speed", currentSpeed);
 			Vector3 newScale = transform.localScale;
 			newScale.x = -1.0f;
 			transform.localScale = newScale;
@@ -158,6 +158,7 @@ public class PlayerControl : MonoBehaviour {
 		else if (Input.GetAxis (axisName) > 0)
 		{
 			//turn to the right if the D button is pressed and facing left.
+			anim.SetFloat ("Speed", currentSpeed);
 			Vector3 newScale = transform.localScale;
 			newScale.x = 1.0f;
 			transform.localScale = newScale;
@@ -242,7 +243,6 @@ public class PlayerControl : MonoBehaviour {
 	
 	void PlayerDead(){
 		//print ("I am dead!");
-		Destroy(player.gameObject);
 		SetCurrentState(PlayerState.Spawning);
 	}
 	
